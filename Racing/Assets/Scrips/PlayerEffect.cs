@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerEffect : MonoBehaviour
 {
-    public ParticleSystem[] ParticleSystems;
+    public GameObject[] ParticleSystems;
     void Start()
     {
         
@@ -23,13 +23,13 @@ public class PlayerEffect : MonoBehaviour
             case 1:
                 if (b)
                 {
-                    ParticleSystems[0].Play();
-                    ParticleSystems[1].Play();
+                    ParticleSystems[0].SetActive(true);
+                    ParticleSystems[1].SetActive(true);
                 }
                 else
                 {
-                    ParticleSystems[0].Stop();
-                    ParticleSystems[1].Stop();
+                    ParticleSystems[0].SetActive(false);
+                    ParticleSystems[1].SetActive(false);
                 }               
                 break;
 

@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 public class PlayerMove : MonoBehaviour
 {
-    enum State {Moving, Drifting}
+    enum State {Moving, Drifting, Booster}
     State CurrentState;
 
     public PlayerEffect PlayerEffect;
@@ -33,14 +33,30 @@ public class PlayerMove : MonoBehaviour
 
     private void StateUpdate()
     {
+        switch (CurrentState)
+        {
+            case State.Moving:
+                _bdrift = false;
+                break;
+            case State.Drifting:
+                _bdrift = true;
+                break;
+            case State.Booster:
+                _bdrift = false;
+                break;
+        }
+
+        //Drift
         if (_bdrift)
         {
-            CurrentState = State.Drifting;
+            if(_bgrounded)
+                PlayerEffect.Play(1, true);
+            else
+                PlayerEffect.Play(1, false);
         }
         else if (!_bdrift)
         {
-            CurrentState = State.Moving;
-
+            PlayerEffect.Play(1, false);
             TurnStrength = 90;
             TurnStrength -= _speedInput / 200;
             if (TurnStrength >= 90)
@@ -125,10 +141,10 @@ public class PlayerMove : MonoBehaviour
         LeftFrontWheel.localRotation = Quaternion.Euler(LeftFrontWheel.localRotation.eulerAngles.x, (_turnInput * MaxWheelTurn) - 270, LeftFrontWheel.localRotation.eulerAngles.z);
         RightFrontWheel.localRotation = Quaternion.Euler(RightFrontWheel.localRotation.eulerAngles.x, (_turnInput * MaxWheelTurn) - 90, RightFrontWheel.localRotation.eulerAngles.z);
 
-        LeftFrontWheel.localRotation = Quaternion.Euler(LeftFrontWheel.localRotation.eulerAngles.x, LeftFrontWheel.localRotation.eulerAngles.y, _speedInput);
-        RightFrontWheel.localRotation = Quaternion.Euler(RightFrontWheel.localRotation.eulerAngles.x, RightFrontWheel.localRotation.eulerAngles.y, _speedInput);
-        LeftBackWheel.localRotation = Quaternion.Euler(LeftBackWheel.localRotation.eulerAngles.x, LeftBackWheel.localRotation.eulerAngles.y, _speedInput);
-        RightBackWheel.localRotation = Quaternion.Euler(RightBackWheel.localRotation.eulerAngles.x, RightBackWheel.localRotation.eulerAngles.y, _speedInput);
+        LeftFrontWheel.eulerAngles += new Vector3(0, 0, _currentSpeed * Time.deltaTime);
+        RightFrontWheel.eulerAngles += new Vector3(0, 0, _currentSpeed * Time.deltaTime);
+        LeftBackWheel.eulerAngles += new Vector3(0, 0, _currentSpeed * Time.deltaTime);
+        RightBackWheel.eulerAngles += new Vector3(0, 0, _currentSpeed * Time.deltaTime);
     }
 
     private void InputMove()
@@ -156,11 +172,12 @@ public class PlayerMove : MonoBehaviour
 
             if (_turnInput == 0 || _speedInput <= 0)
             {
-                _bdrift = false;
+                CurrentState = State.Moving;
                 return;
             }
-                
-            _bdrift = true;
+
+            CurrentState = State.Drifting;
+            
 
             if (_turnInput > 0)
             {
@@ -184,7 +201,7 @@ public class PlayerMove : MonoBehaviour
                 Input.GetKeyUp(KeyCode.UpArrow) || 
                 Input.GetKeyUp(KeyCode.RightArrow))
             {
-                _bdrift = false;
+                CurrentState = State.Moving;
                 _direction = 0;
             }
         }
@@ -229,21 +246,6 @@ public class PlayerMove : MonoBehaviour
 
     private void CallEffext()
     {
-        if (CurrentState == State.Drifting)
-        {
-            if (_bgrounded)
-            {
-                bool act = false;
 
-                if (!act)
-                    PlayerEffect.Play(1, true);
-
-                act = true;            
-            }
-        }
-        else
-        {
-            PlayerEffect.Play(1, false);
-        }
     }
 }
