@@ -26,5 +26,7 @@ public class MainCamera_Action : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, _targetPos, Time.deltaTime * CameraSpeed);
 
         transform.rotation = Quaternion.Lerp(transform.rotation, Target.transform.rotation, Time.deltaTime * TrunSpeed);
+
+        transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
     }
 }
