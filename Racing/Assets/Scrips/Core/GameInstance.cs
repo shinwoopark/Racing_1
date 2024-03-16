@@ -18,6 +18,8 @@ public class GameInstance : MonoBehaviour
 
     public bool bGamePlaying = true;
 
+    public bool bRacing = false;
+
     public bool TimePause;
 
     private void Awake()

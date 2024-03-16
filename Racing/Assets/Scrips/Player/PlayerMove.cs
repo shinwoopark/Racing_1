@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 public class PlayerMove : MonoBehaviour
 {
-    enum State {Moving, Drifting}
+    enum State {Moving, Drifting} // X
     State CurrentState;
 
     public PlayerEffect PlayerEffect;
@@ -17,7 +17,7 @@ public class PlayerMove : MonoBehaviour
 
     private float _speedInput, _turnInput;
 
-    private bool _bgrounded;
+    private bool _bGrounded;
 
     public LayerMask GroundCheck;
     public float GroundRayLength;
@@ -54,7 +54,7 @@ public class PlayerMove : MonoBehaviour
         //Drift
         if (_bdrift)
         {
-            if(_bgrounded)
+            if(_bGrounded)
                 PlayerEffect.Play(1, true);
             else
                 PlayerEffect.Play(1, false);
@@ -173,24 +173,24 @@ public class PlayerMove : MonoBehaviour
 
         if (Physics.Raycast(GroundRayPos.position, -transform.up, out hit, GroundRayLength, GroundCheck))
         {
-            _bgrounded = true;
+            _bGrounded = true;
 
             transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
         }
         else
         {
-            _bgrounded = false;
+            _bGrounded = false;
 
             transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
         }
     }
 
-    private void PlayerMoveUpdate()
+    private void PlayerMoveUpdate() //2
     {
-        if (_bgrounded)
+        if (_bGrounded)
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + new Vector3(0, _turnInput * TurnStrength * Time.deltaTime * Input.GetAxis("Vertical"), 0));
 
-        if (_bgrounded)
+        if (_bGrounded)
         {
             SphereCollider.drag = GroundDrag;
 
@@ -218,7 +218,7 @@ public class PlayerMove : MonoBehaviour
         RightBackWheel.eulerAngles += new Vector3(0, 0, _currentSpeed * Time.deltaTime);
     }
 
-    private void InputMove()
+    private void InputMove() //1
     {
         _speedInput = 0;
 
@@ -238,7 +238,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (!_bgrounded)
+            if (!_bGrounded)
                 return;
 
             if (_turnInput == 0 || _speedInput <= 0)
@@ -287,9 +287,14 @@ public class PlayerMove : MonoBehaviour
         {
             _slowDown -= slowDown * Time.deltaTime;
 
-            if (_slowDown < 0.3f)
+            //if (_slowDown < 0.3f)
+            //{
+            //    _slowDown = 0.3f;
+            //}
+
+            if (_slowDown < 0)
             {
-                _slowDown = 0.3f;
+                _slowDown = 0;
             }
 
             turnStrength += turnStrength * 5 + Time.deltaTime * 2;

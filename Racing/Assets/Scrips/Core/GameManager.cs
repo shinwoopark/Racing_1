@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public BaseItem BaseItem;
+    public int a;
+
     public GameObject ShopCanvas;
 
     void Start()
